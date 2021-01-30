@@ -2,34 +2,28 @@ import numpy as np
 import tensorflow as tf
 import sparse_layer
 
-def encoder_builder(mask_encoder,*args, **kwargs):
+def encoder_builder(mask_encoder,activation_hidden="elu",*args, **kwargs):
     if len(mask_encoder)==1:
         encoder = tf.keras.Sequential()
         encoder.add(sparse_layer.SparseLayer(units=mask_encoder[0].shape[1],mask=mask_encoder[0],*args, **kwargs))
     else:
         encoder = tf.keras.Sequential()
         for i in range(len(mask_encoder)-1):
-            if kwargs['activation']=="tanh":
+            if activation_hidden=="tanh":
                 encoder.add(sparse_layer.SparseLayer(units=mask_encoder[i].shape[1],
-                                                 mask=mask_encoder[i],*args, **kwargs))
+                                                 mask=mask_encoder[i],activation=activation_hidden,use_bias=True,*args, **kwargs))
                 encoder.add(tf.keras.layers.BatchNormalization())
             else:
-                activation=kwargs['activation']
-                kwargs['activation']="linear"
                 encoder.add(sparse_layer.SparseLayer(units=mask_encoder[i].shape[1],
-                                                 mask=mask_encoder[i],*args, **kwargs))
+                                                 mask=mask_encoder[i],activation="linear",use_bias=True,*args, **kwargs))
                 encoder.add(tf.keras.layers.BatchNormalization())
-                kwargs['activation']=activation
-                encoder.add(tf.keras.layers.Activation(kwargs['activation']))
+                encoder.add(tf.keras.layers.Activation(activation_hidden))
                 
-
-
-        kwargs['activation']=="linear"   
-        encoder.add(sparse_layer.SparseLayer(units=mask_encoder[-1].shape[1],mask=mask_encoder[-1],*args, **kwargs))
+        encoder.add(sparse_layer.SparseLayer(units=mask_encoder[-1].shape[1],use_bias=True,mask=mask_encoder[-1],activation="linear",*args, **kwargs))
         encoder.add(tf.keras.layers.BatchNormalization())
     return encoder
 
-def decoder_builder(mask_decoder,bias_last_layer=True,*args, **kwargs):
+def decoder_builder(mask_decoder,activation_hidden="elu",bias_last_layer=True,*args, **kwargs):
     if len(mask_decoder)==1:
         decoder_1 = tf.keras.Sequential()
         decoder_1.add(sparse_layer.SparseLayer(mask=mask_decoder[0],units=mask_decoder[0].shape[1],*args, **kwargs))
@@ -38,28 +32,17 @@ def decoder_builder(mask_decoder,bias_last_layer=True,*args, **kwargs):
     else:
         decoder_1 = tf.keras.Sequential()
         for i in range(len(mask_decoder)-1):
-            if kwargs['activation']=="tanh":
+            if activation_hidden=="tanh":
                 decoder_1.add(sparse_layer.SparseLayer(units=mask_decoder[i].shape[1],
-                                                 mask=mask_decoder[i],*args, **kwargs))
+                                                 mask=mask_decoder[i],use_bias=True,activation="tanh",*args, **kwargs))
                 decoder_1.add(tf.keras.layers.BatchNormalization())
             else:
-                activation=kwargs['activation']
-                kwargs['activation']=="linear"
                 decoder_1.add(sparse_layer.SparseLayer(units=mask_decoder[i].shape[1],
-                                                 mask=mask_decoder[i],*args, **kwargs))
+                                                 mask=mask_decoder[i],use_bias=True,activation="linear",*args, **kwargs))
                 decoder_1.add(tf.keras.layers.BatchNormalization())
-                kwargs['activation']=activation
-                decoder_1.add(tf.keras.layers.Activation(kwargs['activation']))
-                
-               
-        kwargs['activation']="linear"
-        if bias_last_layer==True:
-            kwargs['use_bias']=True
-        else:
-            kwargs['use_bias']=False
+                decoder_1.add(tf.keras.layers.Activation(activation_hidden))
 
-        decoder_2=sparse_layer.SparseLayer(units=mask_decoder[-1].shape[1],
-                                    mask=mask_decoder[-1],*args, **kwargs)
+        decoder_2=sparse_layer.SparseLayer(units=mask_decoder[-1].shape[1],  mask=mask_decoder[-1],use_bias=bias_last_layer,activation="linear",*args, **kwargs)
         
 
         return decoder_1,decoder_2
