@@ -14259,13 +14259,15 @@ a.anchor-link {
 <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[49]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">anndata</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 
 <span class="kn">from</span> <span class="nn">model</span> <span class="kn">import</span> <span class="n">PMVAE</span>
@@ -14303,11 +14305,12 @@ a.anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">PMVAE</span><span class="p">(</span>
     <span class="n">membership_mask</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">12</span><span class="p">],</span>
+    <span class="n">add_auxiliary_module</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">beta</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span>
     <span class="n">kernel_initializer</span><span class="o">=</span><span class="s1">&#39;he_uniform&#39;</span><span class="p">,</span>
     <span class="n">bias_initializer</span><span class="o">=</span><span class="s1">&#39;zero&#39;</span><span class="p">,</span>
@@ -14328,7 +14331,7 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">trainset</span><span class="p">,</span> <span class="n">testset</span><span class="p">,</span> <span class="n">nepochs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">history</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">trainset</span><span class="p">,</span> <span class="n">testset</span><span class="p">,</span> <span class="n">nepochs</span><span class="o">=</span><span class="mi">1200</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14409,6 +14412,109 @@ a.anchor-link {
   </tbody>
 </table>
 </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[52]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">embeddings_to_df</span><span class="p">(</span><span class="n">codes</span><span class="p">,</span> <span class="n">terms</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">add_auxiliary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">terms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">terms</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">add_auxiliary</span><span class="p">:</span>
+        <span class="n">terms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;AUXILIARY&#39;</span><span class="p">)</span>
+    <span class="n">terms</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">terms</span><span class="p">)</span>
+    
+    <span class="n">latent_dim_per_pathway</span> <span class="o">=</span> <span class="n">codes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">terms</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">term_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">latent_dim_per_pathway</span><span class="p">),</span> <span class="n">terms</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">terms</span> <span class="o">=</span> <span class="n">terms</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">latent_dim_per_pathway</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">term_index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">codes</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">terms</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+
+
+<span class="n">outdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;./results&#39;</span><span class="p">)</span>
+<span class="n">outdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">recons</span> <span class="o">=</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">(</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">global_recon</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+    <span class="n">obs</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span>
+    <span class="n">uns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">uns</span><span class="p">,</span>
+    <span class="n">var</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">var</span><span class="p">,</span>
+    <span class="n">varm</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">varm</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">recons</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;codes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embeddings_to_df</span><span class="p">(</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">mu</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;terms&#39;</span><span class="p">],</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">obs_names</span><span class="p">)</span>
+
+<span class="n">recons</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;logvar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embeddings_to_df</span><span class="p">(</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">logvar</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;terms&#39;</span><span class="p">],</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">obs_names</span><span class="p">)</span>
+
+<span class="n">recons</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outdir</span><span class="o">/</span><span class="s1">&#39;recons.h5ad&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[53]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">recons</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[53]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>AnnData object with n_obs × n_vars = 13576 × 979
+    obs: &#39;orig.ident&#39;, &#39;nCount_RNA&#39;, &#39;nFeature_RNA&#39;, &#39;stim&#39;, &#39;seurat_annotations&#39;, &#39;integrated_snn_res.0.5&#39;, &#39;seurat_clusters&#39;, &#39;condition&#39;, &#39;cell_type&#39;, &#39;INTERFERON_SIGNALING&#39;, &#39;INTERFERON_GAMMA_SIGNALING&#39;
+    uns: &#39;condition_colors&#39;, &#39;terms&#39;
+    obsm: &#39;codes&#39;, &#39;logvar&#39;
+    varm: &#39;I&#39;</pre>
 </div>
 
 </div>
