@@ -58,13 +58,7 @@ history = train(model, opt, trainset, testset, nepochs=1200)
 outputs = model(data.X)
 
 
-<<<<<<< HEAD
-# In[52]:
-=======
-# In[31]:
-
-
->>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
+# In[48]:
 
 
 def embeddings_to_df(codes, terms, index, add_auxiliary=True):
@@ -79,14 +73,6 @@ def embeddings_to_df(codes, terms, index, add_auxiliary=True):
     
     return pd.DataFrame(codes, columns=terms.values, index=index)
 
-
-<<<<<<< HEAD
-=======
-# In[48]:
-
-
-
->>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
 outdir = Path('./results')
 outdir.mkdir(exist_ok=True, parents=True)
 
@@ -94,10 +80,6 @@ recons = anndata.AnnData(
     outputs.global_recon.numpy(),
     obs=data.obs,
     uns=data.uns,
-<<<<<<< HEAD
-    var=data.var,
-=======
->>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
     varm=data.varm,
 )
 
@@ -111,15 +93,5 @@ recons.obsm['logvar'] = embeddings_to_df(
     data.uns['terms'],
     data.obs_names)
 
-<<<<<<< HEAD
-recons.write(outdir/'recons.h5ad')
-
-
-# In[53]:
-
-
-recons
-=======
 data.write(outdir/'recons.h5ad')
->>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
 
