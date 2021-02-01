@@ -4,3 +4,5 @@ pmVAE leverages biological prior information in the form of pathway gene sets to
 More details can be found in our preprint: https://www.biorxiv.org/content/10.1101/2021.01.28.428664v1
 
 The forward pass through modules are parallelized through the use of dense masking layers. These are similar to normal dense layers, except we multiply their kernels element-wise with a binary mask to remove unwanted connections. We use two types masks, one to assign genes to their modules and a block diagonal mask to remove connections between the module hidden layers.
+
+repo is under construction, a fully runnable demo.ipynb will be available soon
