@@ -14437,7 +14437,11 @@ a.anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
+<<<<<<< HEAD
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[52]:</div>
+=======
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[31]:</div>
+>>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">embeddings_to_df</span><span class="p">(</span><span class="n">codes</span><span class="p">,</span> <span class="n">terms</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">add_auxiliary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -14451,16 +14455,36 @@ a.anchor-link {
     <span class="n">terms</span> <span class="o">=</span> <span class="n">terms</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">latent_dim_per_pathway</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">term_index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">codes</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">terms</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+<<<<<<< HEAD
 
 
 <span class="n">outdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;./results&#39;</span><span class="p">)</span>
+=======
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[48]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;./results&#39;</span><span class="p">)</span>
+>>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
 <span class="n">outdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">recons</span> <span class="o">=</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">(</span>
     <span class="n">outputs</span><span class="o">.</span><span class="n">global_recon</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
     <span class="n">obs</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span>
     <span class="n">uns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">uns</span><span class="p">,</span>
+<<<<<<< HEAD
     <span class="n">var</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">var</span><span class="p">,</span>
+=======
+>>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
     <span class="n">varm</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">varm</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -14474,6 +14498,7 @@ a.anchor-link {
     <span class="n">data</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;terms&#39;</span><span class="p">],</span>
     <span class="n">data</span><span class="o">.</span><span class="n">obs_names</span><span class="p">)</span>
 
+<<<<<<< HEAD
 <span class="n">recons</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outdir</span><span class="o">/</span><span class="s1">&#39;recons.h5ad&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -14489,6 +14514,9 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">recons</span>
+=======
+<span class="n">data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outdir</span><span class="o">/</span><span class="s1">&#39;recons.h5ad&#39;</span><span class="p">)</span>
+>>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
 </pre></div>
 
      </div>
@@ -14496,6 +14524,7 @@ a.anchor-link {
 </div>
 </div>
 
+<<<<<<< HEAD
 <div class="jp-Cell-outputWrapper">
 
 
@@ -14523,6 +14552,8 @@ a.anchor-link {
 
 </div>
 
+=======
+>>>>>>> e563c8be04a0d97e4f00dcacf5bd48b56f7fcfc6
 </div>
 </body>
 
