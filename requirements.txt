@@ -1,0 +1,6 @@
+pandas
+numpy==1.19
+scipy
+scikit-learn
+tensorflow>=2.3
+jupyter

@@ -1,13 +1,12 @@
 import numpy as np
 import tensorflow as tf
 
-from utils import (build_encoder_net,
-                   build_decoder_net,
-                   build_module_isolation_mask)
+from .utils import (build_encoder_net,
+                    build_decoder_net,
+                    build_module_isolation_mask)
 
 
 from collections import namedtuple
-Loss = namedtuple('Loss', 'loss kl recon global_recon local_recon')
 Outputs = namedtuple('Outputs', 'z global_recon module_outputs mu logvar')
 
 
