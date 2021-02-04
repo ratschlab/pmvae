@@ -11,21 +11,22 @@ Outputs = namedtuple('Outputs', 'z global_recon module_outputs mu logvar')
 
 
 class PMVAE(tf.keras.Model):
-    """Combines the encoder and decoder for training."""
-
     def __init__(self,
                  membership_mask,
                  module_latent_dim,
                  hidden_layers,
-                 bias_last_layer=False,
-                 add_auxiliary_module=False,
                  beta=1,
+                 bias_last_layer=False,
+                 add_auxiliary_module=True,
                  **kwargs):
-        '''pmVAE: factorizes latent space by pathways
+        '''pmVAE constructs a pathway-factorized latent space.
 
-        membership_mask: mask assigning features (genes) to modules
+        membership_mask: bool nparray, shape pathways x genes
         module_latent_dim: dimension of each module latent space
         hidden_layers: width of each module encoder/decoder hidden layer
+        beta: weight of KL term
+        bias_last_layer: use a bias term on the final decoder output
+        add_auxiliary_module: include a fully connected pathway module
         '''
 
         super(PMVAE, self).__init__()
@@ -43,6 +44,8 @@ class PMVAE(tf.keras.Model):
                 module_latent_dim,
                 **kwargs)
 
+        # decoder_net maps a code to the output of each module
+        # merge_layer connects each module output to its genes
         self.decoder_net, self.merge_layer = build_decoder_net(
                 membership_mask,
                 hidden_layers,
