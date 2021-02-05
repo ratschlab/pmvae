@@ -1,6 +1,7 @@
-anndata
+anndata>=0.7
 pandas
 numpy
 scipy
 scikit-learn
+tqdm
 tensorflow>=2.3
