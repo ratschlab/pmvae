@@ -18,6 +18,7 @@ class PMVAE(tf.keras.Model):
                  beta=1,
                  bias_last_layer=False,
                  add_auxiliary_module=True,
+                 terms=None,
                  **kwargs):
         '''pmVAE constructs a pathway-factorized latent space.
 
@@ -35,6 +36,8 @@ class PMVAE(tf.keras.Model):
         if add_auxiliary_module:
             membership_mask = np.vstack(
                     (membership_mask, np.ones_like(membership_mask[0])))
+            if terms is not None:
+                terms = list(terms) + ['AUXILIARY']
 
         self.beta = beta
 
@@ -57,6 +60,10 @@ class PMVAE(tf.keras.Model):
         self.module_isolation_mask = build_module_isolation_mask(
                 self.membership_mask.shape[0],
                 hidden_layers[-1])
+
+        self._module_latent_dim = module_latent_dim
+        self._hidden_layers = hidden_layers
+        self.terms = list(terms)
         return
 
     def encode(self, x, **kwargs):
@@ -92,3 +99,18 @@ class PMVAE(tf.keras.Model):
 
         return zip(self.membership_mask,
                    self.module_isolation_mask)
+
+    def latent_space_names(self, terms=None):
+        terms = self.terms if terms is None else terms
+        assert terms is not None, 'Need to specify gene set terms'
+
+        if self.add_auxiliary_module \
+                and len(terms) == self.num_annotated_modules:
+            terms = list(terms) + ['AUXILIARY']
+
+        z = self._module_latent_dim
+        repeated_terms = np.repeat(terms, z)
+        index = np.tile(range(z), len(terms)).astype(str)
+        latent_dim_names = map('-'.join, zip(repeated_terms, index))
+
+        return list(latent_dim_names)
