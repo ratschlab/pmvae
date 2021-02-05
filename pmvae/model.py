@@ -1,32 +1,33 @@
 import numpy as np
 import tensorflow as tf
 
-from utils import (build_encoder_net,
-                   build_decoder_net,
-                   build_module_isolation_mask)
+from .utils import (build_encoder_net,
+                    build_decoder_net,
+                    build_module_isolation_mask)
 
 
 from collections import namedtuple
-Loss = namedtuple('Loss', 'loss kl recon global_recon local_recon')
 Outputs = namedtuple('Outputs', 'z global_recon module_outputs mu logvar')
 
 
 class PMVAE(tf.keras.Model):
-    """Combines the encoder and decoder for training."""
-
     def __init__(self,
                  membership_mask,
                  module_latent_dim,
                  hidden_layers,
-                 bias_last_layer=False,
-                 add_auxiliary_module=False,
                  beta=1,
+                 bias_last_layer=False,
+                 add_auxiliary_module=True,
+                 terms=None,
                  **kwargs):
-        '''pmVAE: factorizes latent space by pathways
+        '''pmVAE constructs a pathway-factorized latent space.
 
-        membership_mask: mask assigning features (genes) to modules
+        membership_mask: bool nparray, shape pathways x genes
         module_latent_dim: dimension of each module latent space
         hidden_layers: width of each module encoder/decoder hidden layer
+        beta: weight of KL term
+        bias_last_layer: use a bias term on the final decoder output
+        add_auxiliary_module: include a fully connected pathway module
         '''
 
         super(PMVAE, self).__init__()
@@ -35,6 +36,8 @@ class PMVAE(tf.keras.Model):
         if add_auxiliary_module:
             membership_mask = np.vstack(
                     (membership_mask, np.ones_like(membership_mask[0])))
+            if terms is not None:
+                terms = list(terms) + ['AUXILIARY']
 
         self.beta = beta
 
@@ -44,6 +47,8 @@ class PMVAE(tf.keras.Model):
                 module_latent_dim,
                 **kwargs)
 
+        # decoder_net maps a code to the output of each module
+        # merge_layer connects each module output to its genes
         self.decoder_net, self.merge_layer = build_decoder_net(
                 membership_mask,
                 hidden_layers,
@@ -55,6 +60,10 @@ class PMVAE(tf.keras.Model):
         self.module_isolation_mask = build_module_isolation_mask(
                 self.membership_mask.shape[0],
                 hidden_layers[-1])
+
+        self._module_latent_dim = module_latent_dim
+        self._hidden_layers = hidden_layers
+        self.terms = list(terms)
         return
 
     def encode(self, x, **kwargs):
@@ -90,3 +99,18 @@ class PMVAE(tf.keras.Model):
 
         return zip(self.membership_mask,
                    self.module_isolation_mask)
+
+    def latent_space_names(self, terms=None):
+        terms = self.terms if terms is None else terms
+        assert terms is not None, 'Need to specify gene set terms'
+
+        if self.add_auxiliary_module \
+                and len(terms) == self.num_annotated_modules:
+            terms = list(terms) + ['AUXILIARY']
+
+        z = self._module_latent_dim
+        repeated_terms = np.repeat(terms, z)
+        index = np.tile(range(z), len(terms)).astype(str)
+        latent_dim_names = map('-'.join, zip(repeated_terms, index))
+
+        return list(latent_dim_names)

@@ -1,7 +1,7 @@
 import tensorflow as tf
-import time
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 from collections import namedtuple
 Loss = namedtuple('Loss', 'loss kl recon global_recon local_recon')
@@ -26,7 +26,7 @@ def train(model, opt, trainset, testset, nepochs, debug=False):
 
         local_recon_loss = tf.constant(0.0)
         for feat_mask, module_mask in model.get_masks_for_local_losses():
-            # reconstruct but set outputs of other modules to zero
+            # dropout other modules & reconstruct
             only_active_module = tf.multiply(outputs.module_outputs, module_mask)
             local_recon = model.merge(only_active_module)
 
@@ -37,10 +37,9 @@ def train(model, opt, trainset, testset, nepochs, debug=False):
 
         local_recon_loss = local_recon_loss / model.num_annotated_modules
 
-        full = global_recon_loss + local_recon_loss + model.beta * kl
 
         loss = Loss(
-                loss=full,
+                loss=global_recon_loss + local_recon_loss + model.beta * kl,
                 recon=global_recon_loss + local_recon_loss,
                 global_recon=global_recon_loss,
                 local_recon=local_recon_loss,
@@ -64,8 +63,7 @@ def train(model, opt, trainset, testset, nepochs, debug=False):
         'test-loss', 'test-recon', 'test-kl', 'test-local', 'test-global']
     history = pd.DataFrame(np.nan, index=np.arange(nepochs), columns=fields)
 
-    for epoch in range(nepochs):
-        tic = time.perf_counter()
+    for epoch in tqdm(range(nepochs)):
 
         # Compute and apply gradients
         for step, x in enumerate(trainset):
@@ -84,10 +82,5 @@ def train(model, opt, trainset, testset, nepochs, debug=False):
         history.loc[epoch, 'test-recon'] = test_loss.recon.numpy().mean()
         history.loc[epoch, 'test-local'] = test_loss.local_recon.numpy().mean()
         history.loc[epoch, 'test-global'] = test_loss.global_recon.numpy().mean()
-
-        toc = time.perf_counter()
-
-        print(toc-tic)
-        print(test_loss.loss.numpy().mean(), test_loss.recon.numpy().mean())
 
     return history
