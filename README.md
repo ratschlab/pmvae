@@ -13,5 +13,3 @@ We would like to thank Rybakov et al. [1] for pointing us to the Kang et al. [2]
 [1] Rybakov, Sergei, Mohammad Lotfollahi, Fabian J. Theis, and F. Alexander Wolf. 2020. “Learning Interpretable Latent Autoencoder Representations with Annotations of Feature Sets.” Cold Spring Harbor Laboratory. https://doi.org/10.1101/2020.12.02.401182.
 
 [2] Kang, Hyun Min, Meena Subramaniam, Sasha Targ, Michelle Nguyen, Lenka Maliskova, Elizabeth McCarthy, Eunice Wan, et al. 2018. “Multiplexed Droplet Single-Cell RNA-Sequencing Using Natural Genetic Variation.” Nature Biotechnology 36 (1): 89–94.
-
-repo is under construction, a fully runnable demo.ipynb will be available soon
