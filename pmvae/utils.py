@@ -144,3 +144,59 @@ def parse_gmt(path, symbols=None, min_genes=10):
         lut[key] = genes
 
     return lut
+
+
+def make_annotation_mask(membership, genes, min_genes=15):
+    if isinstance(genes, pd.Series):
+        index = genes.index
+    else:
+        genes = pd.Index(genes)
+        index = genes
+
+    mask = pd.DataFrame(False, index=index, columns=membership.keys())
+    for key, mems in membership.items():
+        if isinstance(genes, pd.Series):
+            mems = index[genes.isin(mems)]
+        else:
+            mems = genes.intersection(mems)
+
+        mask.loc[mems, key] = True
+
+    mask = mask.drop(columns=mask.columns[mask.sum(0) < min_genes])
+
+    return mask
+
+
+def add_annotation(
+            data,
+            membership=None, gmt=None,
+            names=None,
+            key='annotation',
+            **kwargs):
+    '''Add memberships to varm of data
+
+    data: AnnData instance
+    gmt: path to gmt memberships
+    memberships: dict mapping gene set names to genes
+    names: gene symbols (or var key) of symbols matching membership vals
+    key: varm key to add annotations
+    kwargs: make_annotaiton_mask kwargs
+    '''
+
+    if names is None:
+        names = data.var_names
+    elif isinstance(names, str):
+        names = data.var[names]
+
+    if gmt is not None:
+        assert membership is None
+        membership = parse_gmt(gmt)
+
+    mask = make_annotation_mask(membership, names, **kwargs)
+    data.varm[key] = mask
+
+    if 'annotated' not in data.var:
+        data.var['annotated'] = False
+    data.var['annotated'] = data.var['annotated'] | (data.varm[key].sum(1) > 0)
+
+    return
