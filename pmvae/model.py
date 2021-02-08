@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 
 from .utils import (build_encoder_net,
@@ -32,6 +33,10 @@ class PMVAE(tf.keras.Model):
 
         super(PMVAE, self).__init__()
         self.num_annotated_modules, self.num_feats = membership_mask.shape
+        if isinstance(membership_mask, pd.DataFrame):
+            terms = membership_mask.index
+            membership_mask = membership_mask.values
+
         self.add_auxiliary_module = add_auxiliary_module
         if add_auxiliary_module:
             membership_mask = np.vstack(
@@ -63,6 +68,7 @@ class PMVAE(tf.keras.Model):
 
         self._module_latent_dim = module_latent_dim
         self._hidden_layers = hidden_layers
+        assert len(terms) == len(self.membership_mask)
         self.terms = list(terms)
         return
 
