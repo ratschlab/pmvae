@@ -9,6 +9,8 @@ More details can be found in our preprint: https://www.biorxiv.org/content/10.11
 To optimize speed on GPUs, the forward pass through modules are parallelized through the use of dense masking layers. These are similar to normal dense layers, except we multiply their kernels element-wise with a binary mask to remove unwanted connections. We use two types masks, one to assign genes to their modules and a block diagonal mask to remove connections between the module hidden layers. Using GPU (GeForce GTX 1080 Ti) a training epoch on the kang dataset (~10k cells, ~1k genes, ~100 pathways) takes around 3 seconds.
 
 We would like to thank Rybakov et al. [1] for pointing us to the Kang et al. [2] work as well as for hosting their preprocessing.
+  
+To download run `./scripts/download.sh`
 
 [1] Rybakov, Sergei, Mohammad Lotfollahi, Fabian J. Theis, and F. Alexander Wolf. 2020. “Learning Interpretable Latent Autoencoder Representations with Annotations of Feature Sets.” bioRxiv 2020.12.02.401182; doi: https://doi.org/10.1101/2020.12.02.401182.
 
