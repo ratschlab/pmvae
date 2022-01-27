@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from scipy.linalg import block_diag
-from tensorflow.python.keras.layers import ops
 from tensorflow.keras.layers import Dense, Activation, BatchNormalization
 
 
@@ -100,7 +99,11 @@ def build_decoder_net(
         decoder_net.add(Activation(activation))
 
     kwargs.pop('use_bias', None)
-    merge_layer = MaskedLayer(masks[-1].shape[1], masks[-1], use_bias=bias_last_layer, **kwargs)
+    merge_layer = MaskedLayer(
+        masks[-1].shape[1], masks[-1],
+        use_bias=bias_last_layer,
+        **kwargs)
+
     return decoder_net, merge_layer
 
 
@@ -116,12 +119,19 @@ class MaskedLayer(Dense):
         return
 
     def call(self, inputs):
-        return ops.core.dense(
-            inputs,
-            tf.multiply(self.kernel, self.mask),
-            self.bias,
-            self.activation,
-            dtype=self._compute_dtype_object)
+        if inputs.dtype.base_dtype != self._compute_dtype_object.base_dtype:
+            inputs = tf.cast(inputs, dtype=self._compute_dtype_object)
+
+        kernel = tf.multiply(self.kernel, self.mask)
+        outputs = tf.matmul(a=inputs, b=kernel)
+
+        if self.use_bias:
+            outputs = tf.nn.bias_add(outputs, self.bias)
+
+        if self.activation is not None:
+            outputs = self.activation(outputs)
+
+        return outputs
 
 
 def load_annotations(gmt, genes, min_genes=10):

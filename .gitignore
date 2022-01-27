@@ -1,4 +1,5 @@
 # Custom
+.envrc
 notebooks/.*.html
 notebooks/.*.py
 data/
